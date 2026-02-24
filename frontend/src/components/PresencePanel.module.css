@@ -1,0 +1,33 @@
+.panel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.green { background: var(--green); box-shadow: 0 0 4px var(--green); }
+.red   { background: #f85149; }
+
+.avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #000;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+.count {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  cursor: default;
+}

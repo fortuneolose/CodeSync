@@ -1,4 +1,4 @@
-import MonacoEditor from "@monaco-editor/react";
+import MonacoEditor, { type OnMount } from "@monaco-editor/react";
 
 export const LANGUAGES = [
   "python", "javascript", "typescript", "java", "cpp", "c",
@@ -6,16 +6,16 @@ export const LANGUAGES = [
 ];
 
 interface EditorPanelProps {
-  value: string;
   language: string;
   theme: "vs-dark" | "vs";
   readOnly?: boolean;
-  onChange?: (value: string) => void;
+  /** Called once Monaco editor + model are ready — used to bind Yjs */
+  onMount?: OnMount;
   onLanguageChange?: (lang: string) => void;
 }
 
 export default function EditorPanel({
-  value, language, theme, readOnly = false, onChange, onLanguageChange,
+  language, theme, readOnly = false, onMount, onLanguageChange,
 }: EditorPanelProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
@@ -42,8 +42,8 @@ export default function EditorPanel({
         <MonacoEditor
           height="100%"
           language={language}
-          value={value}
           theme={theme}
+          defaultValue=""
           options={{
             fontSize: 14,
             minimap: { enabled: false },
@@ -54,7 +54,7 @@ export default function EditorPanel({
             renderLineHighlight: "all",
             padding: { top: 12 },
           }}
-          onChange={(v) => onChange?.(v ?? "")}
+          onMount={onMount}
         />
       </div>
     </div>
