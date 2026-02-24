@@ -23,9 +23,20 @@ async def engine():
 
 
 @pytest_asyncio.fixture
+async def db_session(engine) -> AsyncSession:
+    """A bare AsyncSession for service-layer unit tests (no HTTP client)."""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    async with factory() as session:
+        yield session
+
+
+@pytest_asyncio.fixture
 async def client(engine) -> AsyncClient:
     """Each test gets its own fresh in-memory schema so state never leaks."""
-    # Drop and recreate all tables for full isolation
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

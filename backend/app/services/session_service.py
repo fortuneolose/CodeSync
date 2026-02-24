@@ -40,8 +40,13 @@ async def create_session(db: AsyncSession, data: SessionCreate, owner_id: str) -
     member = SessionMember(session_id=session.id, user_id=owner_id, role="owner")
     db.add(member)
     await db.commit()
-    await db.refresh(session)
-    return session
+    # Reload with members eagerly so callers can access .members immediately
+    result = await db.execute(
+        select(Session)
+        .where(Session.id == session.id)
+        .options(selectinload(Session.members))
+    )
+    return result.scalar_one()
 
 
 async def get_session_by_slug(db: AsyncSession, slug: str) -> Session | None:
