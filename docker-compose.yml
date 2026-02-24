@@ -52,6 +52,10 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    environment:
+      # Point Vite's dev-server proxy to the backend container
+      VITE_API_TARGET: http://backend:8000
+      VITE_WS_TARGET: ws://backend:8000
     depends_on:
       - backend
     command: npm run dev -- --host
