@@ -1,0 +1,35 @@
+.header {
+  height: 48px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  flex-shrink: 0;
+}
+
+.brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+.accent { color: var(--accent); }
+
+.right { display: flex; align-items: center; gap: 0.75rem; }
+
+.username { color: var(--text-muted); font-size: 0.875rem; }
+
+.themeBtn, .logoutBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: border-color 0.15s;
+}
+.themeBtn:hover, .logoutBtn:hover { border-color: var(--accent); }

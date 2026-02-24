@@ -1,0 +1,30 @@
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: grid; place-items: center;
+  z-index: 100;
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  width: 360px;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.title { font-size: 1.1rem; font-weight: 600; margin: 0; }
+.label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; color: var(--text-muted); }
+.input {
+  background: var(--bg); color: var(--text);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 0.4rem 0.6rem; font-size: 0.9rem;
+}
+.input:focus { outline: none; border-color: var(--accent); }
+.checkRow { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer; }
+.actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
+.cancel, .create {
+  padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.875rem; cursor: pointer; border: 1px solid var(--border);
+}
+.cancel { background: none; color: var(--text-muted); }
+.create { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+.create:disabled { opacity: 0.5; cursor: not-allowed; }

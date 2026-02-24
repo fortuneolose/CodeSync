@@ -2,6 +2,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  is_active: boolean;
   created_at: string;
 }
 
@@ -10,8 +11,11 @@ export interface Session {
   slug: string;
   title: string;
   language: string;
+  content: string;
+  is_public: boolean;
   owner_id: string;
   created_at: string;
+  updated_at: string;
 }
 
 export interface Presence {
