@@ -35,13 +35,17 @@ app.add_middleware(
 
 # Routers
 from app.api.routes import health  # noqa: E402
-from app.api.routes import auth     # noqa: E402
-from app.api.routes import sessions # noqa: E402
-from app.api.routes import ws       # noqa: E402
+from app.api.routes import auth      # noqa: E402
+from app.api.routes import sessions  # noqa: E402
+from app.api.routes import ws        # noqa: E402
+from app.api.routes import ai        # noqa: E402
+from app.api.routes import snapshots # noqa: E402
 
-app.include_router(health.router,   prefix="/api")
-app.include_router(auth.router,     prefix="/api")
-app.include_router(sessions.router, prefix="/api")
+app.include_router(health.router,    prefix="/api")
+app.include_router(auth.router,      prefix="/api")
+app.include_router(sessions.router,  prefix="/api")
+app.include_router(ai.router,        prefix="/api")
+app.include_router(snapshots.router, prefix="/api")
 app.include_router(ws.router)  # WebSocket routes — no /api prefix
 
 
