@@ -440,8 +440,7 @@ codesync/
 
 **Built by**: [Fortune Olose](https://github.com/fortuneolose)
 **Repository**: https://github.com/fortuneolose/CodeSync
-**LinkedIn**: [Add your LinkedIn URL]
-**Portfolio**: [Add your portfolio URL]
+**LinkedIn**: [www.linkedin.com/in/fortune-olose-3a88a7185]
 
 **Open for**:
 - Full-time software engineering roles (full-stack, backend, or AI engineering)
