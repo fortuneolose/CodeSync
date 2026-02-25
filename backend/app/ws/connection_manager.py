@@ -20,6 +20,12 @@ from fastapi import WebSocket
 
 from app.core.config import settings
 
+_VALID_REDIS_SCHEMES = ("redis://", "rediss://", "unix://")
+
+
+def _redis_configured() -> bool:
+    return any(settings.redis_url.startswith(s) for s in _VALID_REDIS_SCHEMES)
+
 
 class ConnectionManager:
     def __init__(self) -> None:
@@ -27,24 +33,36 @@ class ConnectionManager:
         self._connections: dict[str, dict[WebSocket, str]] = defaultdict(dict)
         self._lock = asyncio.Lock()
         self._redis: aioredis.Redis | None = None
+        # In-memory fallback when Redis is not configured
+        self._mem: dict[str, list[bytes]] = defaultdict(list)
 
-    # ── Redis ──────────────────────────────────────────────────────────────
+    # ── Redis (with in-memory fallback) ────────────────────────────────────
 
-    async def _r(self) -> aioredis.Redis:
+    async def _r(self) -> aioredis.Redis | None:
+        if not _redis_configured():
+            return None
         if self._redis is None:
             self._redis = aioredis.from_url(settings.redis_url, decode_responses=False)
         return self._redis
 
     async def get_stored_updates(self, slug: str) -> list[bytes]:
         r = await self._r()
+        if r is None:
+            return list(self._mem[slug])
         return await r.lrange(f"session:{slug}:updates", 0, -1)
 
     async def store_update(self, slug: str, update: bytes) -> None:
         r = await self._r()
+        if r is None:
+            self._mem[slug].append(update)
+            return
         await r.rpush(f"session:{slug}:updates", update)
 
     async def clear_updates(self, slug: str) -> None:
         r = await self._r()
+        if r is None:
+            self._mem.pop(slug, None)
+            return
         await r.delete(f"session:{slug}:updates")
 
     # ── Connection lifecycle ───────────────────────────────────────────────
