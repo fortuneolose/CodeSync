@@ -101,6 +101,54 @@ export function useCollabEditor(slug: string) {
       provider.awareness,
     );
     bindingRef.current = binding;
+
+    // Handle custom message type 100: session:restored
+    // The backend broadcasts this when a snapshot is restored so that all
+    // connected clients reset their Yjs document to the restored content.
+    const ws = (provider as unknown as { ws: WebSocket }).ws;
+    if (ws) {
+      ws.addEventListener("message", async (event: MessageEvent) => {
+        let raw: ArrayBuffer;
+        if (event.data instanceof ArrayBuffer) {
+          raw = event.data;
+        } else if (event.data instanceof Blob) {
+          raw = await event.data.arrayBuffer();
+        } else {
+          return;
+        }
+        const buf = new Uint8Array(raw);
+        if (buf.length < 2) return;
+        // Read first varuint to check message type
+        let msgType = 0, shift = 0, pos = 0;
+        while (pos < buf.length) {
+          const b = buf[pos++];
+          msgType |= (b & 0x7f) << shift;
+          if (!(b & 0x80)) break;
+          shift += 7;
+        }
+        if (msgType !== 100) return;
+        // Read the payload length varuint
+        let payloadLen = 0; shift = 0;
+        while (pos < buf.length) {
+          const b = buf[pos++];
+          payloadLen |= (b & 0x7f) << shift;
+          if (!(b & 0x80)) break;
+          shift += 7;
+        }
+        try {
+          const json = JSON.parse(new TextDecoder().decode(buf.slice(pos, pos + payloadLen)));
+          if (json.type === "session:restored" && typeof json.content === "string") {
+            const yText = ydoc.getText("content");
+            ydoc.transact(() => {
+              yText.delete(0, yText.length);
+              yText.insert(0, json.content);
+            });
+          }
+        } catch {
+          // malformed payload — ignore
+        }
+      });
+    }
   };
 
   // Cleanup when slug changes or component unmounts
