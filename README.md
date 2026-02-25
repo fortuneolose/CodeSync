@@ -9,7 +9,12 @@
 [![TypeScript](https://img.shields.io/badge/typescript-5.0+-3178c6.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Live demo:** https://codesync-frontend.onrender.com
+**Live demo:** https://codesync-frontend-a3kj.onrender.com
+
+> **Try it instantly — no sign-up required:**
+> [**https://codesync-frontend-a3kj.onrender.com/editor/4m8p9lly4v**](https://codesync-frontend-a3kj.onrender.com/editor/4m8p9lly4v)
+> Open the link, start typing, and share it with anyone to edit together in real time.
+> *(Free tier cold-start may take ~30 seconds on first load.)*
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/fortuneolose/CodeSync)
 
@@ -302,9 +307,9 @@ Redeploy the backend once secrets are set. Your live demo will be at:
 
 | Service | URL |
 |---|---|
-| **Frontend** | https://codesync-frontend.onrender.com |
-| **API** | https://codesync-api.onrender.com |
-| **API docs** | https://codesync-api.onrender.com/docs |
+| **Frontend** | https://codesync-frontend-a3kj.onrender.com |
+| **API** | https://codesync-api-ho8l.onrender.com |
+| **API docs** | https://codesync-api-ho8l.onrender.com/docs |
 
 > **Note:** Render's free tier spins down after 15 minutes of inactivity — the first request after a cold start may take ~30 seconds.
 
