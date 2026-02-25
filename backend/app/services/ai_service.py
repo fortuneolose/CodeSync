@@ -9,7 +9,27 @@ from __future__ import annotations
 import json
 from typing import AsyncIterator
 
+from pathlib import Path
+
 from app.core.config import settings
+
+
+# ── Read key directly from .env to bypass a stale system env var ────────────
+
+def _load_key_from_env_file() -> str:
+    """Return OPENAI_API_KEY from .env file, or fall back to settings."""
+    env_file = Path(__file__).parent.parent.parent / ".env"
+    try:
+        for line in env_file.read_text().splitlines():
+            line = line.strip()
+            if line.startswith("OPENAI_API_KEY="):
+                return line.split("=", 1)[1].strip()
+    except Exception:
+        pass
+    return settings.openai_api_key
+
+
+_API_KEY: str = _load_key_from_env_file()
 
 
 # ── System prompts ─────────────────────────────────────────────────────────
@@ -57,24 +77,34 @@ async def _stub_stream(text: str) -> AsyncIterator[str]:
 
 
 async def _openai_stream(messages: list[dict]) -> AsyncIterator[str]:
-    from openai import AsyncOpenAI
-    client = AsyncOpenAI(api_key=settings.openai_api_key)
-    stream = await client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=messages,
-        stream=True,
-        max_tokens=1024,
-        temperature=0.3,
-    )
-    async for chunk in stream:
-        delta = chunk.choices[0].delta.content
-        if delta:
-            yield _sse(delta)
-    yield _SSE_DONE
+    from openai import AsyncOpenAI, AuthenticationError, RateLimitError, OpenAIError
+    client = AsyncOpenAI(api_key=_API_KEY)
+    try:
+        stream = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            stream=True,
+            max_tokens=1024,
+            temperature=0.3,
+        )
+        async for chunk in stream:
+            delta = chunk.choices[0].delta.content
+            if delta:
+                yield _sse(delta)
+        yield _SSE_DONE
+    except AuthenticationError:
+        yield _sse("[AI error: invalid or missing OpenAI API key. Set OPENAI_API_KEY in Render dashboard.]")
+        yield _SSE_DONE
+    except RateLimitError:
+        yield _sse("[AI error: OpenAI rate limit or quota exceeded. Check your account billing.]")
+        yield _SSE_DONE
+    except OpenAIError as e:
+        yield _sse(f"[AI error: {e}]")
+        yield _SSE_DONE
 
 
 def _has_key() -> bool:
-    return bool(settings.openai_api_key and not settings.openai_api_key.startswith("sk-..."))
+    return bool(_API_KEY and not _API_KEY.startswith("sk-..."))
 
 
 # ── Public API ──────────────────────────────────────────────────────────────
