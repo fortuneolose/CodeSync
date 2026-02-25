@@ -5,6 +5,12 @@ databases:
     plan: free
 
 services:
+  # ── Redis ─────────────────────────────────────────────────────────────────
+  - type: redis
+    name: codesync-redis
+    plan: free
+    ipAllowList: []           # only allow internal connections
+
   # ── Backend (FastAPI) ──────────────────────────────────────────────────────
   - type: web
     name: codesync-api
@@ -19,7 +25,10 @@ services:
           name: codesync-db
           property: connectionString
       - key: REDIS_URL
-        sync: false          # Set this to your Upstash Redis URL in the Render dashboard
+        fromService:
+          name: codesync-redis
+          type: redis
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: OPENAI_API_KEY
