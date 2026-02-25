@@ -26,7 +26,7 @@ def _load_key_from_env_file() -> str:
                 return line.split("=", 1)[1].strip()
     except Exception:
         pass
-    return settings.openai_api_key
+    return settings.openai_api_key.strip()
 
 
 _API_KEY: str = _load_key_from_env_file()
