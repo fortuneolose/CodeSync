@@ -78,7 +78,7 @@ async def _stub_stream(text: str) -> AsyncIterator[str]:
 
 async def _openai_stream(messages: list[dict]) -> AsyncIterator[str]:
     from openai import AsyncOpenAI, AuthenticationError, RateLimitError, OpenAIError
-    client = AsyncOpenAI(api_key=_API_KEY)
+    client = AsyncOpenAI(api_key=_API_KEY, max_retries=2)
     try:
         stream = await client.chat.completions.create(
             model="gpt-4o-mini",
