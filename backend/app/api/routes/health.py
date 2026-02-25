@@ -1,5 +1,7 @@
 import httpx
+import redis.asyncio as aioredis
 from fastapi import APIRouter
+from app.core.config import settings
 from app.services.ai_service import _API_KEY, _has_key
 
 router = APIRouter(tags=["health"])
@@ -38,3 +40,15 @@ async def ai_diagnostic():
         result["error_type"] = type(e).__name__
         result["error"] = str(e)
     return result
+
+
+@router.get("/health/redis")
+async def redis_diagnostic():
+    """Check Redis connectivity."""
+    try:
+        r = aioredis.from_url(settings.redis_url, socket_connect_timeout=5)
+        pong = await r.ping()
+        await r.aclose()
+        return {"connected": True, "ping": pong, "url_prefix": settings.redis_url[:30] + "..."}
+    except Exception as e:
+        return {"connected": False, "error_type": type(e).__name__, "error": str(e)}
