@@ -1,4 +1,4 @@
-const BASE = "/api/ai";
+const BASE = `${import.meta.env.VITE_API_URL ?? "/api"}/ai`;
 
 export interface ChatMessage {
   role: "user" | "assistant";
