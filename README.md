@@ -9,7 +9,9 @@
 [![TypeScript](https://img.shields.io/badge/typescript-5.0+-3178c6.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Live demo:** https://codesync-frontend.fly.dev *(deploy to activate)*
+**Live demo:** https://codesync-frontend.onrender.com
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/fortuneolose/CodeSync)
 
 ---
 
@@ -268,7 +270,47 @@ npx playwright show-report    # view results
 
 ---
 
-## Deployment (Fly.io)
+## Deployment (Render — recommended, free tier)
+
+The easiest one-click deployment path. No credit card required.
+
+### 1. Free Redis (Upstash)
+
+Sign up at [upstash.com](https://upstash.com) (GitHub OAuth), create a **Redis** database (free tier), and copy the **Redis URL**.
+
+### 2. Deploy to Render
+
+Click the button below or go to **Render → New → Blueprint** and point it at this repo:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/fortuneolose/CodeSync)
+
+Render will automatically create:
+- A **free PostgreSQL** database
+- The **FastAPI backend** web service (`codesync-api`)
+- The **React frontend** static site (`codesync-frontend`)
+
+### 3. Set secrets in Render dashboard
+
+After the initial deploy, set these environment variables on the `codesync-api` service:
+
+| Variable | Value |
+|---|---|
+| `REDIS_URL` | Your Upstash Redis URL |
+| `OPENAI_API_KEY` | Your OpenAI key (optional — app works without it) |
+
+Redeploy the backend once secrets are set. Your live demo will be at:
+
+| Service | URL |
+|---|---|
+| **Frontend** | https://codesync-frontend.onrender.com |
+| **API** | https://codesync-api.onrender.com |
+| **API docs** | https://codesync-api.onrender.com/docs |
+
+> **Note:** Render's free tier spins down after 15 minutes of inactivity — the first request after a cold start may take ~30 seconds.
+
+---
+
+## Deployment (Fly.io — alternative)
 
 ```bash
 # Install flyctl: https://fly.io/docs/hands-on/install-flyctl/

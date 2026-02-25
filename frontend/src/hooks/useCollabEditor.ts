@@ -60,7 +60,8 @@ export function useCollabEditor(slug: string) {
 
     const token = localStorage.getItem("access_token") ?? "";
     const proto = window.location.protocol === "https:" ? "wss" : "ws";
-    const wsBase = `${proto}://${window.location.host}/ws`;
+    const wsBase = import.meta.env.VITE_WS_URL ??
+      `${proto}://${window.location.host}/ws`;
 
     const ydoc = new Y.Doc();
     ydocRef.current = ydoc;

@@ -18,5 +18,15 @@ class Settings(BaseSettings):
     environment: str = "development"
     cors_origins: List[str] = ["http://localhost:5173", "http://localhost:3000"]
 
+    @property
+    def async_database_url(self) -> str:
+        """Ensure asyncpg driver prefix regardless of how DATABASE_URL is provided."""
+        url = self.database_url
+        if url.startswith("postgres://"):
+            return "postgresql+asyncpg://" + url[len("postgres://"):]
+        if url.startswith("postgresql://"):
+            return "postgresql+asyncpg://" + url[len("postgresql://"):]
+        return url
+
 
 settings = Settings()
