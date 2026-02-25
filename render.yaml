@@ -25,7 +25,7 @@ services:
       - key: OPENAI_API_KEY
         sync: false          # Paste your OpenAI key in the Render dashboard
       - key: CORS_ORIGINS
-        value: '["https://codesync-frontend.onrender.com"]'
+        value: '["https://codesync-frontend-a3kj.onrender.com"]'
       - key: ENVIRONMENT
         value: production
       - key: PYTHON_VERSION
@@ -47,6 +47,6 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://codesync-api.onrender.com/api
+        value: https://codesync-api-ho8l.onrender.com/api
       - key: VITE_WS_URL
-        value: wss://codesync-api.onrender.com/ws
+        value: wss://codesync-api-ho8l.onrender.com/ws
