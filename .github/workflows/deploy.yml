@@ -5,31 +5,9 @@ on:
     branches: [main, master]
 
 jobs:
-  deploy-backend:
-    name: Deploy backend to Fly.io
+  notify:
+    name: Deploy triggered
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-
-      - name: Deploy API
-        working-directory: backend
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        run: flyctl deploy --remote-only
-
-  deploy-frontend:
-    name: Deploy frontend to Fly.io
-    runs-on: ubuntu-latest
-    needs: deploy-backend
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-
-      - name: Deploy frontend
-        working-directory: frontend
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        run: flyctl deploy --remote-only
+      - name: Render auto-deploys on push
+        run: echo "Render detects this push and redeploys codesync-api and codesync-frontend automatically."
